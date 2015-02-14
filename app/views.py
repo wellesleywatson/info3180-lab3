@@ -8,7 +8,7 @@ This file creates your application.
 
 from app import app
 from flask import render_template, flash, request, redirect, url_for
-import smtplib
+#app.secret_key = 'akunamatata'
 
 
 
@@ -24,78 +24,48 @@ def home():
 
 @app.route('/contact',methods=['POST', 'GET']) 
 def contact():
+  #flash = 'Message successfully sent'
   if request.method == 'POST':
-        fromaddr = request.form['email'] 
-        fromname = request.form['name']
-        toaddr  = 'nostaw7@gmail.com'
-        toname = 'Wellesley Watson'
-        subject = request.form['subject']
-        msg = request.form['message']
+    fromaddr = request.form['email'] 
+    fromname = request.form['name']
+    toaddr  = 'nostaw7@gmail.com'
+    toname = 'Wellesley Watson'
+    subject = request.form['subject']
+    msg = request.form['message']
 
-        message = """From: {} <{}> 
-        To: {} <{}> 
-        Subject: {} 
-         {} 
-        """
-        messagetosend = message.format(
-                                     fromname,
-                                     fromaddr,
-                                     toname,
-                                     toaddr,
-                                     subject,
-                                     msg)
-  
+    message = """From: {} <{}> 
+    To: {} <{}> 
+    Subject: {} 
+     {} 
+    """
+    messagetosend = message.format(
+                                 fromname,
+                                 fromaddr,
+                                 toname,
+                                 toaddr,
+                                 subject,
+                                 msg)
+    
+    
+    sendemail(fromaddr, toaddr, messagetosend)
+    
   return render_template('contact.html')
+
+
+def sendemail(faddr, taddr, msend):
   
-  
-def sendmail():
-    #Credentials (if needed)
-    
+  import smtplib
+  #Credentials (if needed)
+  username = 'nostaw7@gmail.com'
+  password = 'cyrvtywxbbusnowj'
 
+  # The actual mail send
+  server = smtplib.SMTP('smtp.gmail.com:587')
+  server.starttls()
+  server.login(username,password)
+  server.sendmail(faddr, taddr, msend)
+  server.quit()
 
-    # The actual mail send
-    server = smtplib.SMTP('smtp.gmail.com:587')
-    server.starttls()
-    server.login(username,password)
-    server.sendmail(fromname, fromaddr, messagetosend)
-    server.quit()
-  
-#       if request.method == 'POST':
-#         fromaddr = request.form['name'] 
-#         fromname = request.form['email']
-#         toaddr  = 'nostaw7@gmail.com'
-#         toname = 'Wellesley Watson'
-#         subject = request.form['subject']
-#         msg = request.form['message']
-
-#         message = """From: {} <{}> 
-#         To: {} <{}> 
-#         Subject: {} 
-#          {} 
-#         """
-#         messagetosend = message.format(
-#                                      fromname,
-#                                      fromaddr,
-#                                      toname,
-#                                      toaddr,
-#                                      subject,
-#                                      msg)
-
-
-#         # Credentials (if needed)
-# #         username = 'nostaw7@gmail.com'
-# #         password = 'cyrvtywxbbusnowj'
-
-
-# #         # The actual mail send
-# #         server = smtplib.SMTP('smtp.gmail.com:587')
-# #         server.starttls()
-# #         server.login(username,password)
-# #         server.sendmail(fromname, fromaddr, messagetosend)
-# #         server.quit()
-#         val = "email sent"
-#       return render_template('contact.html', test=messagetosend)
-    
   
   
 @app.route('/about/')
